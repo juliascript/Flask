@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, json
 app = Flask(__name__)
 
 listOfPets = []
@@ -7,14 +7,12 @@ listOfPets = []
 def hello():
     return 'Hello there!\n'
 
-@app.route('/pets', methods = ['GET', 'POST'])
+@app.route('/pets', methods=['POST'])
 def storePets():
-	if request.method == "GET":
-		return listOfPets
-	elif request.method == "POST":
-		# for each elem in the json blob, add it to teh list 
-
-		return "POST"
+	result = request.args.to_dict()
+	listOfPets.append(result)
+	return json.dumps(result)
+	
 
 if __name__ == '__main__':
     app.run()
