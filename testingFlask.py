@@ -10,9 +10,13 @@ def hello():
 @app.route('/pets', methods=['POST'])
 def storePets():
 	result = request.args.to_dict()
-	listOfPets.append(result)
-	return json.dumps(result)
-	
+	print(result)
+	if ('name' in result.keys()) & ('age' in result.keys()) & ('species' in result.keys()):
+		listOfPets.append(result)
+		return json.dumps(result)
+	else:
+		return 'HTTP 400 Error: Bad Request -- Please provide name, age, and species in query string.'
+
 
 if __name__ == '__main__':
     app.run()
