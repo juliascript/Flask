@@ -34,7 +34,7 @@ def pets():
 				listOfPets.append(result)
 				# Add the name of the pet to the namesOfPets list (the name is currently being used as a unique id)
 				namesOfPets.append(nameOfPet)
-				return 'Pet added to store\n'
+				return ''
 			# If the name of the new pet is already in the namesOfPets list, return 409 error
 			else: 
 				return 'HTTP 409 Error: Conflict -- Pet already exists in store.\n', 409
