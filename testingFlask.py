@@ -43,16 +43,36 @@ def pets():
 			return 'HTTP 400 Error: Bad Request -- Please provide name, age, and species in query string.\n', 400
 
 # /pets/<name>
-@app.route('/pets/<path:name>')
+@app.route('/pets/<path:name>', methods=['GET', 'PUT'])
 def petPath(name):
-	# Iterate over all pets stored in listOfPets
-	for pet in listOfPets:
-		# If the name of the pet is equal to the name specified in the path, proceed
-		if pet['name'] == name:
-			# Return that pet
-			return json.dumps(pet)
-	# Otherwise, return a 404 error
-	return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
+	if request.method == "GET":
+		# Iterate over all pets stored in listOfPets
+		for pet in listOfPets:
+			# If the name of the pet is equal to the name specified in the path, proceed
+			if pet['name'] == name:
+				# Return that pet
+				return json.dumps(pet)
+		# Otherwise, return a 404 error
+		return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
+	if request.method == "PUT":
+		# Parse the request arguments into a dictionary
+		result = request.args.to_dict()
+		# If the required arguments (only age, for now) are in the dictionary, proceed
+		if 'age' in result.keys():
+			# If the name of pet exists in the namesOfPets list, proceed
+			if name in namesOfPets:
+				# Determine the index of the specified pet in listOfPets based on its index in nameOfPets
+				indexOfPet = namesOfPets.index(name)
+				# Update all values in the pet object in the listOfPets dict 
+				# ** Add more values here to open up range of extension for PUT method ** 
+				listOfPets[indexOfPet]['age'] = result['age']
+				return ''
+			# If the name of the pet does not exist in the namesOfPets list, return 404 error
+			return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
+		# If the required arguments are not in the dictionary, return 400 error
+		return 'HTTP 400 Error: Bad Request -- Please age in query string to update values of pet.\n', 400
+
+
 
 if __name__ == '__main__':
     app.run()
