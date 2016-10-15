@@ -89,7 +89,5 @@ def petPath(name):
 		else:
 			return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
 
-
-
 if __name__ == '__main__':
     app.run()
