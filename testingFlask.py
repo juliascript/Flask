@@ -3,23 +3,46 @@ app = Flask(__name__)
 
 listOfPets = []
 
+# / route
+@app.route('/')
+def default():
+    return 'Welcome to teh pet store bruh\n'
+
+# /hello route
 @app.route('/hello')
 def hello():
     return 'Hello there!\n'
 
+# /pets route
 @app.route('/pets', methods=['GET', 'POST'])
-def storePets():
+def pets():
+	# If a GET request comes in on the /pets route
 	if request.method == "GET":
+		# Return all pets in the listOfPets list
 		return json.dumps(listOfPets)
+	# If a POST request comes in on the /pets route
 	elif request.method == "POST":
+		# Parse the request arguments into a dictionary
 		result = request.args.to_dict()
-		print(result)
+		# If the required arguments (name, age, and species) are in the dictionary, proceed
 		if ('name' in result.keys()) & ('age' in result.keys()) & ('species' in result.keys()):
+			# Add the pet to the listOfPets list
 			listOfPets.append(result)
-			return json.dumps(result)
+		# If the required arguments (name, age, and species) are not in the dictionary, return 400 error
 		else:
-			return 'HTTP 400 Error: Bad Request -- Please provide name, age, and species in query string.'
+			return 'HTTP 400 Error: Bad Request -- Please provide name, age, and species in query string.', 400
 
+# /pets/<name>
+@app.route('/pets/<path:name>')
+def petPath(name):
+	# Iterate over all pets stored in listOfPets
+	for pet in listOfPets:
+		# If the name of the pet is equal to the name specified in the path,
+		if pet['name'] == name:
+			# Return that pet
+			return json.dumps(pet)
+	# Otherwise, return a 404 error
+	return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store', 404
 
 if __name__ == '__main__':
     app.run()
