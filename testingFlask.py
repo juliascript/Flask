@@ -52,27 +52,27 @@ def petPath(name):
 			if pet['name'] == name:
 				# Return that pet
 				return json.dumps(pet)
-		# Otherwise, return a 404 error
+		# Return a 404 error if the for loop finishes without returning
 		return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
 	elif request.method == "PUT":
 		# Parse the request arguments into a dictionary
 		result = request.args.to_dict()
-		# If the required arguments (only age, for now) are in the dictionary, proceed
-		if 'age' in result.keys():
-			# If the name of pet exists in the namesOfPets list, proceed
-			if name in namesOfPets:
+		# If the name of pet exists in the namesOfPets list, proceed
+		if name in namesOfPets:
+			# If the required arguments (only age, for now) are in the dictionary, proceed
+			if 'age' in result.keys():
 				# Determine the index of the specified pet in listOfPets based on its index in namesOfPets
 				indexOfPet = namesOfPets.index(name)
 				# Update all values in the pet object in the listOfPets dict 
 				# ** Add more values here to open up range of extension for PUT method ** 
 				listOfPets[indexOfPet]['age'] = result['age']
 				return ''
-			# If the name of the pet does not exist in the namesOfPets list, return 404 error
+			# If the required arguments are not in the dictionary, return 400 error
 			else:
-				return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
-		# If the required arguments are not in the dictionary, return 400 error
+				return 'HTTP 400 Error: Bad Request -- Please age in query string to update values of pet.\n', 400
+		# If the name of the pet does not exist in the namesOfPets list, return 404 error
 		else:
-			return 'HTTP 400 Error: Bad Request -- Please age in query string to update values of pet.\n', 400
+			return 'HTTP 404 Error: Page Not Found -- Pet does not exist in store\n', 404
 	elif request.method == "DELETE":
 		# If the pet exists in namesOfPets, proceed
 		if name in namesOfPets:
